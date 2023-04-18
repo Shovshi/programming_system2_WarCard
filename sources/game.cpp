@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 
 using namespace ariel;
 
@@ -34,12 +35,9 @@ Game::Game(Player &p1, Player &p2)
         };
     }
 
-    // Random number generator
-    std::random_device rd;
-    std::mt19937 g(rd());
-
-    // Shuffle the deck
-    std::shuffle(deck.begin(), deck.end(), g);
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    mt19937 rng(seed); // create a random number generator with the given seed
+    shuffle(deck.begin(), deck.end(), rng);
 
     // Divide the cards equally between the players
     size_t numCards = deck.size() / 2;
@@ -102,6 +100,18 @@ void ariel::Game::playTurn()
                     p2.lastTurnCards.push_back(firstP2);
                     p2.cards.erase(p2.cards.begin());
                 }
+                else{
+                    while (drawCards.size())
+                    {
+                        // Split all the draw cards equally between the players
+                        p1.winsCards.push_back(drawCards[0]);
+                        drawCards.erase(drawCards.begin());
+                        p2.winsCards.push_back(drawCards[0]);
+                        drawCards.erase(drawCards.begin());
+                    }
+                draw = false;
+                break;    
+                }
 
                 // std::cout<<"the regular card of p1 is: "<<firstP1.getNumCard(firstP1)<<std::endl;
                 // std::cout<<"the regular card of p2 is: "<<firstP2.getNumCard(firstP2)<<std::endl;
@@ -117,6 +127,7 @@ void ariel::Game::playTurn()
                     drawCards.erase(drawCards.begin());
                 }
                 draw = false;
+                break;
             }
         }
 
@@ -279,21 +290,22 @@ void ariel::Game::printLog()
 }
 
 void ariel::Game::printStats()
-{   
+{
     std::cout << "......................." << std::endl;
 
-    std::cout << "Stats of " << p1.name <<":"<< std::endl;
-    std::cout<< "Win rate: "<<((double)p1.winsNum / (double)numOfTurns)*100 <<"%"<< std::endl;;
-    std::cout<<"Cards won: "<< p1.winsCards.size()<<endl;
+    std::cout << "Stats of " << p1.name << ":" << std::endl;
+    std::cout << "Win rate: " << ((double)p1.winsNum / (double)numOfTurns) * 100 << "%" << std::endl;
+    ;
+    std::cout << "Cards won: " << p1.winsCards.size() << endl;
 
-    std::cout<< "----"<< std::endl;
+    std::cout << "----" << std::endl;
 
-    std::cout << "Stats of " << p2.name <<":"<< std::endl;
-    std::cout<< "Win rate: "<<((double)p2.winsNum / (double)numOfTurns)*100 <<"%"<< std::endl;;
-    std::cout<<"Cards won: "<< p2.winsCards.size()<<endl;
+    std::cout << "Stats of " << p2.name << ":" << std::endl;
+    std::cout << "Win rate: " << ((double)p2.winsNum / (double)numOfTurns) * 100 << "%" << std::endl;
+    ;
+    std::cout << "Cards won: " << p2.winsCards.size() << endl;
 
-    std::cout<<"----"<<std::endl;
-    std::cout<<"Draw rate: "<<((double)drawsNum / (double)numOfTurns)*100 <<"%"<< std::endl;
-    std::cout<<"Amount of draws: "<<drawsNum<<std::endl;
-
+    std::cout << "----" << std::endl;
+    std::cout << "Draw rate: " << ((double)drawsNum / (double)numOfTurns) * 100 << "%" << std::endl;
+    std::cout << "Amount of draws: " << drawsNum << std::endl;
 }

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <random>
 #include <stdexcept>
+#include <chrono>
 
 namespace ariel
 {
@@ -33,5 +34,6 @@ namespace ariel
         void printWiner();
         void printLog();
         void printStats();
+
     };
 }
