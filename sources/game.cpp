@@ -5,22 +5,22 @@
 
 using namespace ariel;
 
-Game::Game(Player &p1, Player &p2)
-    : p1(p1), p2(p2)
+Game::Game(Player &p1_, Player &p2_)
+    : p1_(p1_), p2_(p2_)
 {
     // Confirms that both of the players ready to play
-    if (p1.isPlaying == true)
+    if (p1_.isPlaying == true)
     {
-        throw invalid_argument(p1.name + "invalid to play at this point");
+        throw invalid_argument(p1_.name + "invalid to play at this point");
     }
 
-    if (p2.isPlaying == true)
+    if (p2_.isPlaying == true)
     {
-        throw invalid_argument(p2.name + "invalid to play a this point");
+        throw invalid_argument(p2_.name + "invalid to play a this point");
     }
 
-    p1.isPlaying = true;
-    p2.isPlaying = true;
+    p1_.isPlaying = true;
+    p2_.isPlaying = true;
 
     // Creats a deck of 52 cards for the game and push it by order to the vector
     vector<Card> deck;
@@ -43,31 +43,31 @@ Game::Game(Player &p1, Player &p2)
     size_t numCards = deck.size() / 2;
     for (size_t i = 0; i < numCards; i++)
     {
-        p1.addCard(deck[i]);
-        p2.addCard(deck[i + numCards]);
+        p1_.addCard(deck[i]);
+        p2_.addCard(deck[i + numCards]);
     }
 }
 void ariel::Game::playTurn()
 {
-    // std::cout << "p1 start with: " << p1.cards[0].getNumCard(p1.cards[0]) << std::endl;
-    // std::cout << "p2 starts with: " << p2.cards[0].getNumCard(p2.cards[0]) << std::endl;
-    if (&p1 == &p2)
+    // std::cout << "p1_ start with: " << p1_.cards[0].getNumCard(p1_.cards[0]) << std::endl;
+    // std::cout << "p2_ starts with: " << p2_.cards[0].getNumCard(p2_.cards[0]) << std::endl;
+    if (&p1_ == &p2_)
     {
         throw invalid_argument("You can't play with the same player");
     }
 
-    if (p1.stacksize() != 0)
+    if (p1_.stacksize() != 0)
     {
         numOfTurns++;
-        Card firstP1 = p1.cards[0];
-        p1.cards.erase(p1.cards.begin());
-        Card firstP2 = p2.cards[0];
-        p2.cards.erase(p2.cards.begin());
+        Card firstP1 = p1_.cards[0];
+        p1_.cards.erase(p1_.cards.begin());
+        Card firstP2 = p2_.cards[0];
+        p2_.cards.erase(p2_.cards.begin());
 
         logCards.push_back(firstP1);
         logCards.push_back(firstP2);
-        p1.lastTurnCards.push_back(firstP1);
-        p2.lastTurnCards.push_back(firstP2);
+        p1_.lastTurnCards.push_back(firstP1);
+        p2_.lastTurnCards.push_back(firstP2);
 
         // Draw
         while (firstP2.getNumCard() == firstP1.getNumCard())
@@ -76,13 +76,13 @@ void ariel::Game::playTurn()
             drawsNum++;
             p1Win = false;
             p2Win = false;
-            if (p1.stacksize())
+            if (p1_.stacksize())
             {
                 // Draw a face down card
-                faceDownCard1 = p1.cards[0];
-                p1.cards.erase(p1.cards.begin());
-                faceDownCard2 = p2.cards[0];
-                p2.cards.erase(p2.cards.begin());
+                faceDownCard1 = p1_.cards[0];
+                p1_.cards.erase(p1_.cards.begin());
+                faceDownCard2 = p2_.cards[0];
+                p2_.cards.erase(p2_.cards.begin());
 
                 // Put the cards of the draw into a draw vector
                 drawCards.push_back(firstP1);
@@ -90,40 +90,40 @@ void ariel::Game::playTurn()
                 drawCards.push_back(faceDownCard1);
                 drawCards.push_back(faceDownCard2);
 
-                if (p1.stacksize())
+                if (p1_.stacksize())
                 {
                     // Pull another regular card to continue the game
-                    firstP1 = p1.cards[0];
-                    p1.lastTurnCards.push_back(firstP1);
-                    p1.cards.erase(p1.cards.begin());
-                    firstP2 = p2.cards[0];
-                    p2.lastTurnCards.push_back(firstP2);
-                    p2.cards.erase(p2.cards.begin());
+                    firstP1 = p1_.cards[0];
+                    p1_.lastTurnCards.push_back(firstP1);
+                    p1_.cards.erase(p1_.cards.begin());
+                    firstP2 = p2_.cards[0];
+                    p2_.lastTurnCards.push_back(firstP2);
+                    p2_.cards.erase(p2_.cards.begin());
                 }
                 else{
                     while (drawCards.size())
                     {
                         // Split all the draw cards equally between the players
-                        p1.winsCards.push_back(drawCards[0]);
+                        p1_.winsCards.push_back(drawCards[0]);
                         drawCards.erase(drawCards.begin());
-                        p2.winsCards.push_back(drawCards[0]);
+                        p2_.winsCards.push_back(drawCards[0]);
                         drawCards.erase(drawCards.begin());
                     }
                 draw = false;
                 break;    
                 }
 
-                // std::cout<<"the regular card of p1 is: "<<firstP1.getNumCard(firstP1)<<std::endl;
-                // std::cout<<"the regular card of p2 is: "<<firstP2.getNumCard(firstP2)<<std::endl;
+                // std::cout<<"the regular card of p1_ is: "<<firstp1_.getNumCard(firstp1_)<<std::endl;
+                // std::cout<<"the regular card of p2_ is: "<<firstp2_.getNumCard(firstp2_)<<std::endl;
             }
             else
             {
                 while (drawCards.size())
                 {
                     // Split all the draw cards equally between the players
-                    p1.winsCards.push_back(drawCards[0]);
+                    p1_.winsCards.push_back(drawCards[0]);
                     drawCards.erase(drawCards.begin());
-                    p2.winsCards.push_back(drawCards[0]);
+                    p2_.winsCards.push_back(drawCards[0]);
                     drawCards.erase(drawCards.begin());
                 }
                 draw = false;
@@ -139,16 +139,16 @@ void ariel::Game::playTurn()
             {
                 while (drawCards.size())
                 {
-                    p1.winsCards.push_back(drawCards[0]);
+                    p1_.winsCards.push_back(drawCards[0]);
                     drawCards.erase(drawCards.begin());
                 }
             }
             p1Win = true;
             p2Win = false;
-            p1.winsNum++;
+            p1_.winsNum++;
             draw = false;
-            p1.winsCards.push_back(firstP1);
-            p1.winsCards.push_back(firstP2);
+            p1_.winsCards.push_back(firstP1);
+            p1_.winsCards.push_back(firstP2);
         }
 
         // If player2 has won
@@ -158,21 +158,21 @@ void ariel::Game::playTurn()
             {
                 while (drawCards.size())
                 {
-                    p2.winsCards.push_back(drawCards[0]);
+                    p2_.winsCards.push_back(drawCards[0]);
                     drawCards.erase(drawCards.begin());
                 }
             }
             p1Win = false;
             p2Win = true;
-            p2.winsNum++;
+            p2_.winsNum++;
             draw = false;
-            p2.winsCards.push_back(firstP1);
-            p2.winsCards.push_back(firstP2);
+            p2_.winsCards.push_back(firstP1);
+            p2_.winsCards.push_back(firstP2);
         }
     }
 
     // Throw invalid argument because the cards are over
-    else if (p1.cards.size() == 0)
+    else if (p1_.cards.size() == 0)
     {
         throw invalid_argument("The cards are over");
     }
@@ -183,33 +183,33 @@ void ariel::Game::playTurn()
 
 void ariel::Game::printLastTurn()
 {
-    for (size_t turns = 0; turns < p1.lastTurnCards.size(); turns++)
+    for (size_t turns = 0; turns < p1_.lastTurnCards.size(); turns++)
     {
-        std::cout << p1.name << " played";
-        p1.lastTurnCards[turns].printCard();
-        std::cout << p2.name << " played";
-        p2.lastTurnCards[turns].printCard();
+        std::cout << p1_.name << " played";
+        p1_.lastTurnCards[turns].printCard();
+        std::cout << p2_.name << " played";
+        p2_.lastTurnCards[turns].printCard();
 
-        if (p1.lastTurnCards[turns].getNumCard() == p2.lastTurnCards[turns].getNumCard())
+        if (p1_.lastTurnCards[turns].getNumCard() == p2_.lastTurnCards[turns].getNumCard())
         {
             std::cout << "Draw." << std::endl;
         }
 
-        else if (p1.lastTurnCards[turns].getNumCard() > p2.lastTurnCards[turns].getNumCard())
+        else if (p1_.lastTurnCards[turns].getNumCard() > p2_.lastTurnCards[turns].getNumCard())
         {
-            std::cout << p1.name << " wins." << std::endl;
+            std::cout << p1_.name << " wins." << std::endl;
         }
 
         else
         {
-            std::cout << p2.name << " wins." << std::endl;
+            std::cout << p2_.name << " wins." << std::endl;
         }
     }
 }
 
 void ariel::Game::playAll()
 {
-    while (p1.cards.size())
+    while (p1_.cards.size())
     {
         playTurn();
     }
@@ -217,13 +217,13 @@ void ariel::Game::playAll()
 void ariel::Game::printWiner()
 {
     std::cout << "......................." << std::endl;
-    if (p1.winsCards.size() > p2.winsCards.size())
+    if (p1_.winsCards.size() > p2_.winsCards.size())
     {
-        std::cout << p1.name << " won." << std::endl;
+        std::cout << p1_.name << " won." << std::endl;
     }
-    else if (p2.winsCards.size() > p1.winsCards.size())
+    else if (p2_.winsCards.size() > p1_.winsCards.size())
     {
-        std::cout << p2.name << " won." << std::endl;
+        std::cout << p2_.name << " won." << std::endl;
     }
     else
     {
@@ -239,22 +239,22 @@ void ariel::Game::printLog()
     bool wasDraw = false;
     for (size_t turn = 0; turn < numOfTurns; turn++)
     {
-        std::cout << p1.name << " played";
+        std::cout << p1_.name << " played";
         player1Card.printCard();
-        std::cout << p2.name << " played";
+        std::cout << p2_.name << " played";
         player2Card.printCard();
 
         if (player1Card.getNumCard() > player2Card.getNumCard() || (player1Card.getNumCard() == 2 && player2Card.getNumCard() == 14))
         {
             wasDraw = false;
-            std::cout << p1.name << " Won." << endl;
+            std::cout << p1_.name << " Won." << endl;
             logCards.erase(logCards.begin());
             logCards.erase(logCards.begin());
         }
         else if (player1Card.getNumCard() < player2Card.getNumCard() || (player1Card.getNumCard() == 14 && player2Card.getNumCard() == 2))
         {
             wasDraw = false;
-            std::cout << p2.name << " Won." << endl;
+            std::cout << p2_.name << " Won." << endl;
             logCards.erase(logCards.begin());
             logCards.erase(logCards.begin());
         }
@@ -266,9 +266,9 @@ void ariel::Game::printLog()
         {
             if (!wasDraw)
             {
-                std::cout << p1.name << " played ";
+                std::cout << p1_.name << " played ";
                 logCards[0].printCard();
-                std::cout << p2.name << " played ";
+                std::cout << p2_.name << " played ";
                 logCards[1].printCard();
             }
 
@@ -278,9 +278,9 @@ void ariel::Game::printLog()
 
             if (wasDraw)
             {
-                std::cout << p1.name << " played with ";
+                std::cout << p1_.name << " played with ";
                 logCards[0].printCard();
-                std::cout << p2.name << " played with ";
+                std::cout << p2_.name << " played with ";
                 logCards[1].printCard();
             }
 
@@ -293,17 +293,17 @@ void ariel::Game::printStats()
 {
     std::cout << "......................." << std::endl;
 
-    std::cout << "Stats of " << p1.name << ":" << std::endl;
-    std::cout << "Win rate: " << ((double)p1.winsNum / (double)numOfTurns) * 100 << "%" << std::endl;
+    std::cout << "Stats of " << p1_.name << ":" << std::endl;
+    std::cout << "Win rate: " << ((double)p1_.winsNum / (double)numOfTurns) * 100 << "%" << std::endl;
     ;
-    std::cout << "Cards won: " << p1.winsCards.size() << endl;
+    std::cout << "Cards won: " << p1_.winsCards.size() << endl;
 
     std::cout << "----" << std::endl;
 
-    std::cout << "Stats of " << p2.name << ":" << std::endl;
-    std::cout << "Win rate: " << ((double)p2.winsNum / (double)numOfTurns) * 100 << "%" << std::endl;
+    std::cout << "Stats of " << p2_.name << ":" << std::endl;
+    std::cout << "Win rate: " << ((double)p2_.winsNum / (double)numOfTurns) * 100 << "%" << std::endl;
     ;
-    std::cout << "Cards won: " << p2.winsCards.size() << endl;
+    std::cout << "Cards won: " << p2_.winsCards.size() << endl;
 
     std::cout << "----" << std::endl;
     std::cout << "Draw rate: " << ((double)drawsNum / (double)numOfTurns) * 100 << "%" << std::endl;

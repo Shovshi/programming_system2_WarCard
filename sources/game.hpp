@@ -14,8 +14,8 @@ namespace ariel
     class Game
     {
     public:
-        Player &p1;
-        Player &p2;
+        Player &p1_;
+        Player &p2_;
         vector<Card> logCards;
         bool p1Win = false;
         bool p2Win = false;
